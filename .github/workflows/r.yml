@@ -1,0 +1,23 @@
+name: R
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch: default
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      
+      - name: Set up R ${{ matrix.r-version }}
+        uses: r-lib/actions/setup-r@ffe45a39586f073cc2e9af79c4ba563b657dc6e3
+
+      - name: Check
+        run: |
+          dir.create("revdep")
+          download.file("https://cran.r-project.org/src/contrib/pins_1.0.0.tar.gz", destfile = file.path(revdep, "pins_1.0.0.tar.gz"))
+          new_results <- tools::check_packages_in_dir(dir = "revdep", check_args = c("--no-build-vignettes", "--no-manual"), reverse = list(which = "Suggests"))
+        shell: Rscript {0}
