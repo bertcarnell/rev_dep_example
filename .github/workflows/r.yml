@@ -3,7 +3,6 @@ name: R
 on:
   push:
     branches: [ main ]
-  workflow_dispatch: default
 
 jobs:
   build:
