@@ -13,11 +13,19 @@ jobs:
       
       - name: Set up R ${{ matrix.r-version }}
         uses: r-lib/actions/setup-r@master
+        
+      - name: Install
+        run: |
+          sudo apt-get update
+          # libcurl needed by httr and arrow which are dependencies of pins
+          sudo apt-get install -y libcurl4-openssl-dev
 
       - name: Check
         run: |
           dir.create("revdep")
           download.file("https://cran.r-project.org/src/contrib/pins_1.0.0.tar.gz", destfile = file.path("revdep", "pins_1.0.0.tar.gz"))
           new_results <- tools::check_packages_in_dir(dir = "revdep", check_args = c("--no-build-vignettes", "--no-manual"), reverse = list(which = "Suggests"))
-          list.files("revdep", recursive=TRUE)
+          warnings()
+          list.files("revdep")
+          list.files(file.path("revdep","Library")
         shell: Rscript {0}
